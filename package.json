@@ -1,0 +1,20 @@
+{
+  "name": "vault-tech",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build/service": "rollup -c service/rollup.config.js",
+    "start/service": "cd service && wrangler dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@axel669/rollup-hono-files": "^0.1.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "hono": "^4.5.5",
+    "rollup": "^4.20.0"
+  }
+}
