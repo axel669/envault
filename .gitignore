@@ -130,3 +130,9 @@ dist
 .pnp.*
 
 service/.wrangler/
+
+service/artifacts/
+
+site/.wrangler/
+
+site/artifacts/
