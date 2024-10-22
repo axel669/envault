@@ -1,14 +1,19 @@
 import fileRoutes from "@axel669/rollup-hono-files"
 import resolve from "@rollup/plugin-node-resolve"
+import commonjs from "@rollup/plugin-commonjs"
 
 export default {
-    input: "service/src/main.js",
+    input: "src/main.js",
     output: {
-        file: "service/build/main.js",
-        format: "esm"
+        file: "artifacts/main.js",
+        format: "esm",
+        sourcemap: true,
     },
     plugins: [
-        fileRoutes,
+        fileRoutes({
+            debug: true,
+        }),
         resolve(),
+        commonjs()
     ]
 }

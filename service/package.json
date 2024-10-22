@@ -1,0 +1,25 @@
+{
+  "name": "vault-tech",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build/service": "rollup -c rollup.config.js",
+    "start/service": "cross-env-shell \"wrangler dev --var user:$USERNAME\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@axel669/asuid": "^0.2.1",
+    "@axel669/rollup-hono-files": "^0.1.2",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@tsndr/cloudflare-worker-jwt": "^2.5.3",
+    "cookie": "^0.6.0",
+    "cross-env": "^7.0.3",
+    "hono": "^4.5.5",
+    "rollup": "^4.20.0"
+  }
+}

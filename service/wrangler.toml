@@ -1,12 +1,15 @@
 name = "envault-api"
 compatibility_date = "2024-06-03"
 
-main = "build/main.js"
+main = "artifacts/main.js"
 
 d1_databases = [
     { binding = "storage", database_name = "envault-db", database_id = "wat" }
 ]
 
 [build]
-command = "pnpm -C .. run build/service"
+command = "pnpm run build/service"
 watch_dir = "src"
+
+[vars]
+jwt_secret = "supersecretkey"

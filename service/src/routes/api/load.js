@@ -1,16 +1,15 @@
 export const $post = async (c) => {
     const keyNames = await c.req.json()
-    const apiKey = c.req.header("api-key") ?? ""
+    const user = c.get("user")
 
-    const keyValid = await c.env.storage.prepare(
-        "select * from api_keys where key = ?1"
-    ).bind(apiKey).all()
-
-    if (keyValid.results.length === 0) {
-        return c.json("nope", 403)
+    if (user.allowed === undefined) {
+        return c.json(
+            { message: "Allowed key list not defined" },
+            401
+        )
     }
 
-    const validKeyNames = JSON.parse(keyValid.results[0].allowed).map(
+    const validKeyNames = user.allowed.map(
         name => new RegExp(`^${name.replace("*", ".*")}$`)
     )
     const invalidKeys = keyNames.filter(
@@ -32,11 +31,13 @@ export const $post = async (c) => {
 
     const sql = c.env.storage.prepare(`
         select * from vault
-        where name = ?1
+        where
+            users_asuid = ?1
+            and name = ?2
     `)
     const result = await Promise.all(
         keyNames.map(
-            name => sql.bind(name).all()
+            name => sql.bind(user.asuid, name).all()
         )
     )
     const env = Object.fromEntries(
