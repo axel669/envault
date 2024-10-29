@@ -13,21 +13,39 @@
 
     import api from "#api"
 
-    export let user
+    import EditVariable from "./dashboard/edit-variable.svelte"
 
-    let items = user.items.map(
-        item => ({ ...item })
+    export let user
+    export let keys
+    export let vars
+
+    vars = vars.map(
+        item => ({
+            status: "saved",
+            ...item,
+        })
     )
 
     const add = () => {
-        items = [
-            ...items,
-            { asuid: null, name: "", key: "", value: "" }
+        vars = [
+            ...vars,
+            { asuid: null, name: "", key: "", value: "", status: "new" }
         ]
     }
     const save = async () => {
-        const res = await api.vault.update(items)
+        const changed = vars.filter(
+            item => item.status !== "saved"
+        )
+        const res = await api.vault.update(changed)
         console.log(res)
+        const vault = await api.vault.list()
+        console.log(vault)
+        vars = vault.data
+    }
+    const removeItem = (evt) => {
+        vars = vars.filter(
+            item => item !== evt.detail
+        )
     }
 
     const addkey = async () => {
@@ -77,16 +95,14 @@
             </AsyncButton>
         </Grid>
 
-        <Grid cols="1fr 1fr 2fr">
-            {#each items as item}
-                <Input lined label="Name" bind:value={item.name} />
-                <Input lined label="Key" bind:value={item.key} />
-                <Input lined label="Value" bind:value={item.value} />
+        <Grid cols="repeat(1, 1fr)">
+            {#each vars as item (item)}
+                <EditVariable bind:item on:remove={removeItem} />
             {/each}
         </Grid>
 
-        <Button color="@primary" on:click={() => console.log(items)}>
+        <!-- <Button color="@primary" on:click={() => console.log(items)}>
             View
-        </Button>
+        </Button> -->
     </Paper>
 </Screen>
