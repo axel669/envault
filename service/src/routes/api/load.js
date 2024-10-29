@@ -12,7 +12,7 @@ export const $post = async (c) => {
     const validKeyNames = user.allowed.map(
         name => new RegExp(`^${name.replace("*", ".*")}$`)
     )
-    const invalidKeys = keyNames.filter(
+    const invalidNames = keyNames.filter(
         name => {
             for (const check of validKeyNames) {
                 if (check.test(name) === true) {
@@ -22,9 +22,9 @@ export const $post = async (c) => {
             return true
         }
     )
-    if (invalidKeys.length > 0) {
+    if (invalidNames.length > 0) {
         return c.json(
-            { message: "Invalid keys requested", invalidKeys },
+            { message: "Invalid env items requested", invalidNames },
             401
         )
     }
