@@ -13,14 +13,18 @@ export const $post = async (c) => {
 
     console.log(user)
 
-    const existing = keys.filter(key => key.asuid !== null)
-    const newkeys = keys.filter(key => key.asuid === null)
+    const existing = keys.filter(key => key.status === "changed")
+    const newkeys = keys.filter(key => key.status === "new")
+    const deletedkeys = keys.filter(key => key.status === "deleted")
 
     const update = c.env.storage.prepare(
         "update vault set name = ?3, key = ?4, value = ?5 where users_asuid = ?1 and asuid = ?2"
     )
     const create = c.env.storage.prepare(
         "insert into vault(users_asuid, asuid, name, key, value) values(?1, ?2, ?3, ?4, ?5)"
+    )
+    const remove = c.env.storage.prepare(
+        "delete from vault where users_asuid = ?1 and asuid = ?2"
     )
     const updateResults = await batch(
         c.env.storage,
@@ -34,6 +38,12 @@ export const $post = async (c) => {
             key => create.bind(user.asuid, asuid(), key.name, key.key, key.value)
         )
     )
+    const removedResults = await batch(
+        c.env.storage,
+        deletedkeys.map(
+            key => remove.bind(user.asuid, key.asuid)
+        )
+    )
 
-    return c.json({ updateResults, newResults })
+    return c.json({ updateResults, newResults, removedResults })
 }

@@ -13,7 +13,7 @@
   "author": "Axel",
   "license": "MIT",
   "dependencies": {
-    "@axel669/acheron": "^0.1.3",
+    "@axel669/acheron": "^0.1.4",
     "@axel669/asuid": "^0.2.1",
     "@axel669/http": "^0.1.2",
     "@axel669/rollup-copy-static": "^0.1.2",
