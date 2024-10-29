@@ -9,6 +9,8 @@
         AsyncButton,
 
         Grid,
+
+        handler$,
     } from "@axel669/zephyr"
 
     import api from "#api"
@@ -48,14 +50,34 @@
         )
     }
 
+    const refreshKeys = async () => {
+        const keyList = await api.keys.list()
+        keys = keyList.data
+    }
+    let allow = ""
+    let desc = ""
     const addkey = async () => {
-        const desc = prompt("key description", "")
-        if (desc === null) {
+        const description = desc
+        const allowed = allow.trim().split(/\r?\n/).map(line => line.trim())
+        const res = await api.keys.add({description, allowed})
+        console.log(res)
+        if (res.data !== true) {
             return
         }
-        const res = await api.keys.add(desc)
-        console.log(res)
+        desc = ""
+        allow = ""
+        await refreshKeys()
     }
+
+    const removeKey = handler$(
+        async (key) => {
+            const res = await api.keys.remove(key.key)
+            if (res.ok === false) {
+                return
+            }
+            await refreshKeys()
+        }
+    )
 </script>
 
 <Screen>
@@ -67,24 +89,29 @@
                     User: {user.email}
                 </Text>
             </Text>
+
+            <Button on:click={() => console.log(user)} slot="menu" ground>
+                Debug
+            </Button>
         </Titlebar>
 
+        <Input lined label="Key Description" bind:value={desc} />
+        <Input lined type="area" label="Allowed Env Vars" bind:value={allow} h="6em" />
         <AsyncButton handler={addkey} outline color="@primary">
             Add Key
         </AsyncButton>
 
-        {#each user.apiKeys as key}
+        {#each keys as key}
             <div>
+                <AsyncButton handler={removeKey(key)}>
+                    Remove
+                </AsyncButton>
                 <div>
                     Issued: {new Date(key.keyInfo.iat * 1000).toLocaleString()}
                 </div>
                 {key.desc}
             </div>
         {/each}
-
-        <Button color="@primary" on:click={() => console.log(items)}>
-            View Keys
-        </Button>
 
         <Grid cols="1fr 1fr 1fr">
             <Button on:click={add} outline color="@primary">
