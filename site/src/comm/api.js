@@ -8,25 +8,13 @@ const routeProxy = (base) => new Proxy(
             return _[name]
         },
         apply(_, _this, args) {
-            if (args.length === 0) {
-                return http.get(base)
+            const options = args[0] ?? {}
+            if (options.data === undefined) {
+                return http.get({ url: base, ...options })
             }
-            return http.post({ url: base, data: args[0] })
+            return http.post({ url: base, ...options })
         }
     }
 )
 
 export default routeProxy("api")
-// export default {
-//     user: () => http.get("api/user"),
-//     vault: {
-//         update: (items) => http.post({
-//             url: "api/vault/update",
-//             data: items,
-//         }),
-//         add: (desc) => http.post({
-//             url: "api/keys/add",
-//             data: desc
-//         })
-//     }
-// }
