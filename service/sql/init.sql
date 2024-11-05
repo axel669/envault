@@ -24,11 +24,11 @@ create table api_keys(
 create index api_key_find on api_keys(users_asuid, key);
 
 create table vault(
-    asuid text not null primary key,
+    id integer primary key,
     users_asuid text not null,
     name text not null,
-    key text not null,
-    value text not null,
+    iv text not null,
+    content blob not null,
     foreign key(users_asuid) references users(asuid)
 );
-create index vault_find on vault(users_asuid, asuid, name);
+create unique index vault_find on vault(users_asuid, name);

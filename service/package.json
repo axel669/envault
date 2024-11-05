@@ -20,6 +20,10 @@
     "cookie": "^0.6.0",
     "cross-env": "^7.0.3",
     "hono": "^4.5.5",
+    "js-yaml": "^4.1.0",
     "rollup": "^4.20.0"
+  },
+  "imports": {
+    "#lib/*": "./src/lib/*.js"
   }
 }
