@@ -8,7 +8,7 @@ export const onRequest = async (ctx) => {
             method: ctx.request.method,
             body: ctx.request.body,
             headers: {
-                ...ctx.request.headers,
+                ...Object.fromEntries(ctx.request.headers.entries()),
                 user: JSON.stringify(ctx.data.user)
             }
         }
