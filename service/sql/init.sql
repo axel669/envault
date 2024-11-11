@@ -1,3 +1,6 @@
+drop index if exists metrics_find;
+drop table if exists metrics;
+
 drop index if exists vault_find;
 drop table if exists vault;
 
@@ -32,3 +35,12 @@ create table vault(
     foreign key(users_asuid) references users(asuid)
 );
 create unique index vault_find on vault(users_asuid, name);
+
+create table metrics(
+    id integer primary key,
+    vault_id integer,
+    datestring text,
+    count integer,
+    foreign key(vault_id) references vault(id)
+);
+create unique index metrics_find on metrics(vault_id, datestring);
