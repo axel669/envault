@@ -8,6 +8,27 @@
         <!-- <link rel="icon" type="image/png" href="https://axel669.net/images/megaman-rounded.png"> -->
     </head>
     <body>
+        <script>
+            window.loading = null
+            window.scriptLoad = new Promise(
+                (resolve) => loading = resolve
+            )
+        </script>
         <script type="module" data-main src="main.mjs"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.4/ace.min.js"
+            integrity="sha512-9xNuS6O4ZXZdCVDekkW4ApP8MfH2SCyK7Wsd4g0l3KDmbNld2vsozYGY6kQup0VKB0iT89cLj/DiRSV7WjfUaw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.4/keybinding-sublime.min.js"
+            integrity="sha512-w/39STWW/Z1LblB2XwmGduzCcCPEL1HUi220daoSjYw4d/XsSzSQm+2no518nufpy5mKKTChZ50oQ9YQE/zDNg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.4/mode-yaml.min.js"
+            integrity="sha512-bhWJZ1sv72wofqBOpkbpMkaMwVDjm6JngTzUi1YrsPzw3TNI9Jhowvm8/ukApqashlDHc/ZE+2Ex4Z82NysSUQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.4/theme-twilight.min.js"
+            integrity="sha512-CQbWpkkaPvt/wFnztAIuDoXvww/t8Ls9p98tRFw241zbd7jO743xfx2T8A48OXOUd7mFrb+iRCRrdwv2XDPHYw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            loading(true)
+        </script>
     </body>
 </html>
