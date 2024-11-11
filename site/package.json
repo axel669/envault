@@ -29,6 +29,7 @@
     "svelte": "^3.58.0"
   },
   "imports": {
-    "#api": "./src/comm/api.js"
+    "#api": "./src/comm/api.js",
+    "#comp/*": "./src/comp/*.svelte"
   }
 }
