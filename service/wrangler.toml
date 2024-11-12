@@ -7,9 +7,8 @@ d1_databases = [
     { binding = "storage", database_name = "envault-db", database_id = "e8da95a3-87d4-41d0-8158-7862ddace1f4" }
 ]
 
+workers_dev = false
+
 [build]
 command = "pnpm run build/service"
 watch_dir = "src"
-
-[vars]
-jwt_secret = "supersecretkey"
