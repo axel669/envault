@@ -9,10 +9,11 @@ const routeProxy = (base) => new Proxy(
         },
         apply(_, _this, args) {
             const options = args[0] ?? {}
-            if (options.data === undefined) {
-                return http.get({ url: base, ...options })
+            const { method = null, ...opt } = options
+            if (method === null && options.data === undefined) {
+                return http.get({ url: base, ...opt })
             }
-            return http.post({ url: base, ...options })
+            return http[method ?? "post"]({ url: base, ...opt })
         }
     }
 )
