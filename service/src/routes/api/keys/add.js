@@ -3,11 +3,11 @@ import asuid from "@axel669/asuid"
 
 export const $post = async (c) => {
     const user = c.get("user")
-    const {description, allowed} = await c.req.json()
+    const {description, allow} = await c.req.json()
 
     const keyID = asuid()
     const key = await jwt.sign(
-        { userID: user.asuid, keyID, allowed },
+        { userID: user.asuid, keyID, allow },
         c.env.jwt_secret
     )
 

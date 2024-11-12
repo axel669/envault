@@ -41,7 +41,7 @@ export const $any = async (c, next) => {
             })
         }
 
-        c.set("user", { asuid: info.userID, allowed: info.allowed })
+        c.set("user", { asuid: info.userID, allow: info.allow })
         return await next()
     }
 

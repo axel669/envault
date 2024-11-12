@@ -19,7 +19,15 @@ export const $get = async (c) => {
     const reqKeys = c.req.query().keys
 
     const keyList = reqKeys?.split(",") ?? []
-    const allowed = user.allowed ?? ["*"]
+    const allow = user.allow ?? { [name]: ["*"] }
+    const allowed = allow[name]
+
+    if (allowed === undefined) {
+        return c.json(
+            { message: "API Key cannot access vault" },
+            401
+        )
+    }
 
     const validKeyNames = allowed.map(
         name => new RegExp(`^${name.replace("*", ".*?")}$`)
@@ -54,13 +62,6 @@ export const $get = async (c) => {
     }
 
     await countVault(c.env.storage, results[0].id)
-    // const datestring = new Date().toISOString().slice(0, 10)
-    // await c.env.storage.prepare(`
-    //     insert into metrics(vault_id, datestring, count)
-    //     values(?1, ?2, 1)
-    //     on conflict do
-    //         update set count = count + 1
-    // `).bind(results[0].id, datestring).all()
 
     const iv = new Uint8Array(results[0].iv)
     const keyBytes = new Uint8Array(
@@ -87,9 +88,10 @@ export const $get = async (c) => {
         )
         return Response.json(
             entries.reduce(
-                (env, [key, pair]) => {
+                (env, [key, value]) => {
                     if (keyList.includes(key) === true) {
-                        return { ...env, ...pair }
+                        env[key] = value
+                        return env
                     }
                     return env
                 },
