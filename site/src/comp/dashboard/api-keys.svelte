@@ -3,11 +3,17 @@
         AsyncButton,
         Button,
         Input,
+        Tabs,
+
+        Grid,
 
         handler$,
     } from "@axel669/zephyr"
 
     import api from "#api"
+
+    import KeyManager from "#comp/dashboard/api-keys/manager"
+    import KeyCreate from "#comp/dashboard/api-keys/create"
 
     export let keys
 
@@ -15,66 +21,40 @@
         const keyList = await api.keys.list()
         keys = keyList.data
     }
-    let allow = ""
-    let desc = ""
-    $: allowed =
-        allow.trim()
-        .split(/\r?\n/)
-        .map(line => line.trim())
-        .filter(name => name !== "")
-    const addkey = async () => {
-        const description = desc
-        if (allowed.length === 0) {
-            console.log("no keys")
-            return
-        }
-        const res = await api.keys.add({
-            data: { description, allowed }
-        })
+
+    const addKey = async (data) => {
+        const res = await api.keys.add({ data })
         console.log(res)
         if (res.data !== true) {
+            return false
+        }
+        await refreshKeys()
+        return true
+    }
+
+    const removeKey = async (key) => {
+        const res = await api.keys.remove({ data: key.key })
+        if (res.ok === false) {
             return
         }
-        desc = ""
-        allow = ""
         await refreshKeys()
     }
 
-    const removeKey = handler$(
-        async (key) => {
-            const res = await api.keys.remove({ data: key.key })
-            if (res.ok === false) {
-                return
-            }
-            await refreshKeys()
-        }
-    )
-    const copyKey = handler$(
-        async (key) => {
-            await navigator.clipboard.writeText(key.key)
-            console.log("copied!")
-            // console.log(key)
-        }
-    )
+    const manager = { removeKey, addKey }
+    let currentTab = "add"
+    const options = [
+        { label: "Manage Keys", value: "list" },
+        { label: "Add Key", value: "add" },
+    ]
+
+    const subscreen = {
+        list: KeyManager,
+        add: KeyCreate,
+    }
 </script>
 
-<Input lined label="Key Description" bind:value={desc} />
-<Input lined type="area" label="Allowed Env Vars" bind:value={allow} h="6em" />
-<AsyncButton handler={addkey} outline color="@primary" disabled={allowed.length === 0}>
-    Add Key
-</AsyncButton>
+<Grid rows="min-content 1fr" p="0px" gap="0px" h="100%">
+    <Tabs {options} bind:value={currentTab} fill color="@secondary" />
 
-{#each keys as key}
-    <div>
-        <AsyncButton handler={removeKey(key)}>
-            Remove
-        </AsyncButton>
-        <Button on:click={copyKey(key)} color="@secondary">
-            Copy API Key
-        </Button>
-        <div>
-            Issued: {new Date(key.keyInfo.iat * 1000).toLocaleString()}
-        </div>
-        {key.desc}
-    </div>
-{/each}
+    <svelte:component this={subscreen[currentTab]} {keys} {manager} />
+</Grid>

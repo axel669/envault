@@ -22,6 +22,7 @@
     "@axel669/zephyr": "^0.4.6",
     "@rollup/plugin-commonjs": "^24.1.0",
     "@rollup/plugin-node-resolve": "^15.0.2",
+    "js-yaml": "^4.1.0",
     "rollup": "^3.21.0",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-svelte": "^7.1.4",
