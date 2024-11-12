@@ -1,5 +1,6 @@
 <script>
     import {
+        Icon,
         Link,
         Paper,
         Route,
@@ -39,6 +40,10 @@
                     User: {user.email}
                 </Text>
             </Text>
+
+            <Link href="#" button ground slot="menu">
+                <Icon name="house" />
+            </Link>
         </Titlebar>
 
         <Route exact>
