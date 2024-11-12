@@ -2,14 +2,14 @@ import aes from "#lib/aes"
 import yaml from "js-yaml"
 // import * as gzip from "#lib/gzip"
 
-const countVault = (storage, vaultID) => {
+const countVault = (storage, asuid, vaultID) => {
     const datestring = new Date().toISOString().slice(0, 10)
     return storage.prepare(`
-        insert into metrics(vault_id, datestring, count)
-        values(?1, ?2, 1)
+        insert into metrics(users_asuid, vault_id, datestring, count)
+        values(?3, ?1, ?2, 1)
         on conflict do
             update set count = count + 1
-    `).bind(vaultID, datestring).all()
+    `).bind(vaultID, datestring, asuid).all()
 }
 
 export const $get = async (c) => {
@@ -58,10 +58,10 @@ export const $get = async (c) => {
     `).bind(name, user.asuid).all()
 
     if (results.length === 0) {
-        return Response.json("")
+        return c.json({ message: "No vault found" }, 404)
     }
 
-    await countVault(c.env.storage, results[0].id)
+    await countVault(c.env.storage, user.asuid, results[0].id)
 
     const iv = new Uint8Array(results[0].iv)
     const keyBytes = new Uint8Array(
@@ -146,8 +146,27 @@ export const $post = async (c) => {
     `).bind(user.asuid, name, iv, content).all()
     await countVault(
         c.env.storage,
+        user.asuid,
         results[0]?.id ?? writeInfo.meta.last_row_id
     )
 
     return Response.json(writeInfo)
+}
+
+export const $delete = async (c) => {
+    const { name } = c.req.param()
+    const user = c.get("user")
+
+    if (user.allow !== undefined) {
+        return c.json({ message: "Can only delete vaults from the UI" }, 403)
+    }
+
+    const info = await c.env.storage.prepare(`
+        delete from vault
+        where
+            users_asuid = ?2
+            and name = ?1
+    `).bind(name, user.asuid).all()
+
+    return c.json(info)
 }

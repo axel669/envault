@@ -27,7 +27,7 @@ create table api_keys(
 create index api_key_find on api_keys(users_asuid, key);
 
 create table vault(
-    id integer primary key,
+    id integer primary key autoincrement,
     users_asuid text not null,
     name text not null,
     iv text not null,
@@ -38,9 +38,9 @@ create unique index vault_find on vault(users_asuid, name);
 
 create table metrics(
     id integer primary key,
+    users_asuid text not null,
     vault_id integer,
     datestring text,
-    count integer,
-    foreign key(vault_id) references vault(id)
+    count integer
 );
-create unique index metrics_find on metrics(vault_id, datestring);
+create unique index metrics_find on metrics(users_asuid, vault_id, datestring);
