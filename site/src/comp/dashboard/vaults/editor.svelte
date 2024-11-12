@@ -94,7 +94,7 @@
             </Text>
         {/if}
 
-        <Input label="Vault Key" bind:value={vault.key} />
+        <Input label="Vault Key" type="password" bind:value={vault.key} />
 
         {#if vault.content === null}
             <AsyncButton handler={open} fill color="@primary"
